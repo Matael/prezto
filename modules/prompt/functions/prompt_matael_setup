@@ -1,0 +1,45 @@
+function prompt_matael_precmd {
+  git-info
+	python-info
+}
+
+function prompt_matael_setup {
+  setopt LOCAL_OPTIONS
+  unsetopt XTRACE KSH_ARRAYS
+  prompt_opts=(cr percent subst)
+
+  # Load required functions.
+  autoload -Uz add-zsh-hook
+
+  # Add hook for calling git-info before each command.
+  add-zsh-hook precmd prompt_matael_precmd
+
+
+  # Set git-info parameters.
+  zstyle ':prezto:module:git:info' verbose 'yes'
+  zstyle ':prezto:module:git:info:ahead' format '%%B%F{yellow}▲%f%%b'
+  zstyle ':prezto:module:git:info:behind' format '%%B%F{yellow}▼%f%%b'
+  zstyle ':prezto:module:git:info:branch' format '%F{green}%b%f'
+  zstyle ':prezto:module:git:info:stashed' format '%%B%F{green}•%f%%b'
+
+  zstyle ':prezto:module:git:info:clean' format ''
+  zstyle ':prezto:module:git:info:dirty' format '%F{red}*%f'
+  zstyle ':prezto:module:git:info:untracked' format '%%B%F{blue}◦%f%%b'
+
+  # zstyle ':prezto:module:git:info:keys' format \
+  #     'prompt' ' %F{green}(%f$(coalesce "%b" "%p" "%c")${git_info[rprompt]}%s%F{green})%f' \
+  #     'rprompt' '%A%B%S%C%D%U%u'
+  zstyle ':prezto:module:git:info:keys' format \
+      'prompt' ' (%F{green}%f$(coalesce "%b" "%p" "%c")%C%D%F{white}%F{bold}|%F{none}%F{green}${git_info[rprompt]}%s%F{green}%f)' \
+      'rprompt' '%A%B%S%U%u'
+
+	# Set python venv parameters
+	zstyle ':prezto:module:python:info:virtualenv' format '%F{blue}%v%f)'
+
+  # Define prompts.
+	PROMPT="%F{bold}%F{blue}%m%F{white}|%F{none}"'${(e)python_info[virtualenv]}'" %F{green}%~%F{none}"'${(e)git_info[prompt]}'" %F{green}::%F{none} "
+  RPROMPT=''
+
+}
+
+prompt_matael_setup "$@"
